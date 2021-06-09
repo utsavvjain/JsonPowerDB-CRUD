@@ -1,0 +1,164 @@
+<DOCTYPE html>
+<html lang='en'>
+<head>
+<title>Student Management</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<form method="POST" action="" name="StudentRegistration" >
+
+<table cellpadding="2" width="20%" bgcolor="grey" align="center" 
+cellspacing="2">
+
+<tr>
+<td colspan=2>
+<center><font size=4><b>Student Registration (Module)</b></font></center>
+</td>
+</tr>
+
+<tr>
+<td>Name</td>
+<td><input type=text name=name id="name" size="30"></td>
+</tr>
+
+<tr>
+<td>Father Name</td>
+<td><input type="text" name="fathername" id="fathername"
+size="30"></td>
+</tr>
+
+<tr>
+<td>Sex</td>
+<td><input type="radio" name="sex" value="male" size="10">Male
+<input type="radio" name="sex" value="Female" size="10">Female</td>
+</tr>
+
+<tr>
+<td>EmailId</td>
+<td><input type="text" name="emailid" id="emailid" size="30"></td>
+</tr>
+
+<tr>
+<td>DOB</td>
+<td><input type="text" name="dob" id="dob" size="30"></td>
+</tr>
+
+<tr>
+<td>MobileNo</td>
+<td><input type="text" name="mobileno" id="mobileno" size="30"></td>
+</tr>
+<tr>
+<td><input type="reset"></td>
+<td colspan="2"><input type="submit" value="Submit Form" onclick="registerCandidate();"/></td>
+</tr>
+</table>
+</form>
+<center><a href="index.html">Home</a><br></center>
+<script>
+
+function validate()
+{ 
+if( document.StudentRegistration.name.value == "" )
+{
+alert( "Please provide your Name!" );
+document.StudentRegistration.name.focus() ;
+return "";
+}
+if( document.StudentRegistration.fathername.value == "" ){
+alert( "Please provide your Father Name!" );
+document.StudentRegistration.fathername.focus() ;
+return "";
+}
+   
+if ( ( StudentRegistration.sex[0].checked == false ) && ( StudentRegistration.sex[1].checked == false ) )
+{
+alert ( "Please choose your Gender: Male or Female" );return "";
+}   
+if( document.StudentRegistration.emailid.value == "" ) 
+{
+alert("Please enter correct email ID")
+document.StudentRegistration.emailid.focus() ;
+return "";
+}
+if( document.StudentRegistration.dob.value == "" )
+{
+alert( "Please provide your DOB!" );
+document.StudentRegistration.dob.focus() ;
+return "";
+}
+if( document.StudentRegistration.mobileno.value == "" ||
+isNaN( document.StudentRegistration.mobileno.value) ||
+document.StudentRegistration.mobileno.value.length != 10 )
+{
+alert( "Please provide a Mobile No in the format 9XXXXXXXXX." );
+document.StudentRegistration.mobileno.focus() ;
+return "";
+}
+var gndr;
+if (StudentRegistration.sex[0].checked == true)
+{
+gndr="male";
+}
+else
+{
+gndr="female";
+}
+jsonObj={
+name :  document.StudentRegistration.name.value,
+fatherName : document.StudentRegistration.fathername.value,
+gender : gndr,
+emailId : document.StudentRegistration.emailid.value,
+dob : document.StudentRegistration.dob.value,
+mobileNo : document.StudentRegistration.mobileno.value 
+};
+return JSON.stringify(jsonObj)
+}
+function createPUTRequest(connToken, jsonObj, dbName, relName) {
+var putRequest = "{\n"
++ "\"token\" : \""
++ connToken
++ "\","
++ "\"dbName\": \""
++ dbName
++ "\",\n" + "\"cmd\" : \"PUT\",\n"
++ "\"rel\" : \""
++ relName + "\","
++ "\"jsonStr\": \n"
++ jsonObj
++ "\n"
++ "}";
+return putRequest;
+}
+function executeCommand(reqString, dbBaseUrl, apiEndPointUrl)
+{
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result)
+{
+jsonObj = JSON.parse(result);
+}).fail(function (result) 
+{
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+
+function registerCandidate() 
+{
+var jsonStr = validate();
+if(jsonStr === "") 
+{
+return;
+}
+var putReqStr = createPUTRequest("90936048|-31948841558568235|90934010",jsonStr, "Students", "Student-Data");
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(putReqStr,"http://api.login2explore.com:5577", "/api/iml");
+jQuery.ajaxSetup({async: true});
+alert( "INSERTED "+document.StudentRegistration.name.value+" successfully");
+}
+</script>
+</body>
+</html>

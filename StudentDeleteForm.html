@@ -1,0 +1,88 @@
+<DOCTYPE html>
+<html lang='en'>
+<head>
+<title>Student Management</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<form method="POST" action="" name="StudentDeletion" >
+
+<table cellpadding="2" width="20%" bgcolor="grey" align="center" 
+cellspacing="2">
+
+<tr>
+<td colspan=2>
+<center><font size=4><b>Student Deletion(Module)</b></font></center>
+</td>
+</tr>
+
+<tr>
+<td>Record No </td>
+<td><input type="number" name="recordno" id="recordno" size="30"></td>
+</tr>
+
+<tr>
+<td><input type="reset"></td>
+<td colspan="2"><input type="submit" value="Delete Student" onclick="deleteStudent();"/></td>
+</tr>
+</table>
+</form>
+<center><a href="index.html">Home</a><br></center>
+<script>
+
+function validate()
+{ 
+if( document.StudentDeletion.recordno.value == "" ) 
+{
+alert("Please enter record Number")
+document.StudentRegistration.recordno.focus() ;
+return "";
+}
+return document.StudentDeletion.recordno.value
+}
+function createREMOVERequest(connToken, recordNumber, dbName, relName)
+{
+var removeRequest = "{\n"
++ "\"token\" : \""
++ connToken
++ "\","
++ "\"dbName\": \""
++ dbName
++ "\",\n" + "\"cmd\" : \"REMOVE\",\n"
++ "\"rel\" : \""
++ relName + "\","
++ "\"record\": "
++ recordNumber
++ "\n"
++ "}";
+return removeRequest;
+}
+function executeCommand(reqString, dbBaseUrl, apiEndPointUrl)
+{
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result)
+{
+jsonObj = JSON.parse(result);
+}).fail(function (result) 
+{
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+
+function deleteStudent() 
+{
+recordNumber=validate();
+var removeReqStr = createREMOVERequest("90936048|-31948841558568235|90934010",recordNumber, "Students", "Student-Data");
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(removeReqStr,"http://api.login2explore.com:5577", "/api/iml");
+jQuery.ajaxSetup({async: true});
+alert( "Removed "+emailId+" successfully");
+}
+</script>
+</body>
+</html>

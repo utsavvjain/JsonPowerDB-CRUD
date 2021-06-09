@@ -1,0 +1,93 @@
+<DOCTYPE html>
+<html lang='en'>
+<head>
+<title>Student Management</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<form method="POST" action="" name="StudentShow" >
+
+<table cellpadding="2" width="20%" bgcolor="grey" align="center" 
+cellspacing="2">
+
+<tr>
+<td colspan=2>
+<center><font size=4><b>Student Show(Module)</b></font></center>
+</td>
+</tr>
+
+<tr>
+<td>Email id </td>
+<td><input type="text" name="emailid" id="emailid" size="30"></td>
+</tr>
+
+<tr>
+<td><input type="reset"></td>
+<td colspan="2"><input type="submit" value="Show Student" onclick="showStudent();"/></td>
+</tr>
+</table>
+</form>
+<p id="show"></p>
+<center><a href="index.html">Home</a><br></center>
+<script>
+
+function validate()
+{ 
+if( document.StudentShow.emailid.value == "" ) 
+{
+alert("Please enter correct email id")
+document.StudentShow.recordno.focus() ;
+return "";
+}
+jsonObj={
+emailId : document.StudentShow.emailid.value
+}
+return jsonObj;
+}
+function createGETRequest(token, jsonObjStr,dbname, relationName) {
+var value1 = "{\n"
++ "\"token\" : \""
++ token
++ "\",\n" + "\"cmd\" : \"GET\",\n"
++ "\"dbName\": \""
++ dbname
++ "\",\n"
++ "\"rel\" : \""
++ relationName
++ "\",\n"
++ "\"jsonStr\":\n"
++ jsonObjStr
++ "\n"
++ "}";
+return value1;
+}function executeCommand(reqString, dbBaseUrl, apiEndPointUrl)
+{
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result)
+{
+jsonObj = JSON.parse(result);
+}).fail(function (result) 
+{
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+
+function showStudent() 
+{
+emailId=validate();
+var showReqStr = createGETRequest("90936048|-31948841558568235|90934010",JSON.stringify(emailId), "Students", "Student-Data");
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(showReqStr,"http://api.login2explore.com:5577", "/api/irl");
+var data = JSON.stringify(resultObj);            
+alert(data)
+
+jQuery.ajaxSetup({async: true});
+}
+</script>
+</body>
+</html>
