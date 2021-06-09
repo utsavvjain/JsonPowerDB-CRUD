@@ -53,7 +53,7 @@ JsonPowerDB (JPDB) is Next Generation, Creative and Disruptive Multi-mode DBMS_ 
 * v1 2021/06/09 
   * Added files related to performing CRUD operations
 
-# Prerequisits to run this project
+# Prerequisites to run this project
 * An active internet connection.
 * A web browser
 
